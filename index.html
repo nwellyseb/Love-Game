@@ -1,21 +1,100 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Our Love Game 💖</title>
-    <style>
-        body {
-            margin: 0;
-            overflow: hidden;
-            background: linear-gradient(to bottom, #ff9a9e, #fad0c4);
-            font-family: Arial, sans-serif;
-            text-align: center;
+<meta charset="UTF-8">
+<title>Love Catch Game 💖</title>
+<style>
+body {
+    margin: 0;
+    overflow: hidden;
+    background: linear-gradient(to bottom, #ff758c, #ff7eb3);
+    font-family: Arial, sans-serif;
+    text-align: center;
+}
+h1 {
+    color: white;
+}
+#score {
+    color: white;
+    font-size: 20px;
+}
+#player {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    font-size: 40px;
+    transform: translateX(-50%);
+}
+.heart {
+    position: absolute;
+    font-size: 30px;
+}
+#message {
+    display: none;
+    position: absolute;
+    top: 40%;
+    width: 100%;
+    font-size: 28px;
+    color: white;
+}
+</style>
+</head>
+
+<body>
+
+<h1>Catch the Hearts 💕</h1>
+<div id="score">Love Score: 0</div>
+<div id="player">💖</div>
+<div id="message">You caught all my love! I love you forever ❤️</div>
+
+<script>
+let score = 0;
+const player = document.getElementById("player");
+const scoreDisplay = document.getElementById("score");
+const message = document.getElementById("message");
+
+document.addEventListener("mousemove", function(e) {
+    player.style.left = e.clientX + "px";
+});
+
+function createHeart() {
+    const heart = document.createElement("div");
+    heart.className = "heart";
+    heart.innerHTML = "💘";
+    heart.style.left = Math.random() * window.innerWidth + "px";
+    heart.style.top = "-30px";
+    document.body.appendChild(heart);
+
+    let fall = setInterval(function() {
+        heart.style.top = heart.offsetTop + 4 + "px";
+
+        const heartRect = heart.getBoundingClientRect();
+        const playerRect = player.getBoundingClientRect();
+
+        if (
+            heartRect.bottom >= playerRect.top &&
+            heartRect.left < playerRect.right &&
+            heartRect.right > playerRect.left
+        ) {
+            score++;
+            scoreDisplay.innerHTML = "Love Score: " + score;
+            heart.remove();
+            clearInterval(fall);
+
+            if (score >= 15) {
+                message.style.display = "block";
+            }
         }
 
-        h1 {
-            color: white;
-            margin-top: 10px;
+        if (heart.offsetTop > window.innerHeight) {
+            heart.remove();
+            clearInterval(fall);
         }
+    }, 20);
+}
 
-        #score {
-            color: white;
-            font-size: 20px;
+setInterval(createHeart, 800);
+</script>
+
+</body>
+</html>
