@@ -2,98 +2,114 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Love Catch Game 💖</title>
+<title>Our Love Story 💖</title>
 <style>
 body {
     margin: 0;
     overflow: hidden;
-    background: linear-gradient(to bottom, #ff758c, #ff7eb3);
     font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #ff758c, #ff7eb3);
     text-align: center;
-}
-h1 {
     color: white;
 }
-#score {
-    color: white;
+
+#startScreen {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #ff758c, #ff7eb3);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+button {
+    padding: 15px 30px;
+    font-size: 18px;
+    border: none;
+    border-radius: 25px;
+    background: white;
+    color: #ff4e7a;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+button:hover {
+    transform: scale(1.1);
+}
+
+#scoreBoard {
+    position: absolute;
+    top: 15px;
+    width: 100%;
     font-size: 20px;
 }
-#player {
-    position: absolute;
-    bottom: 20px;
-    left: 50%;
-    font-size: 40px;
-    transform: translateX(-50%);
-}
+
 .heart {
     position: absolute;
     font-size: 30px;
+    cursor: pointer;
+    animation: floatUp 4s linear forwards;
 }
-#message {
+
+@keyframes floatUp {
+    from { transform: translateY(100vh); opacity: 1; }
+    to { transform: translateY(-10vh); opacity: 0; }
+}
+
+#finalMessage {
     display: none;
     position: absolute;
     top: 40%;
     width: 100%;
     font-size: 28px;
-    color: white;
 }
 </style>
 </head>
 
 <body>
 
-<h1>Catch the Hearts 💕</h1>
-<div id="score">Love Score: 0</div>
-<div id="player">💖</div>
-<div id="message">You caught all my love! I love you forever ❤️</div>
+<div id="startScreen">
+    <h1>Welcome to Our Love Game 💕</h1>
+    <button onclick="startGame()">Start Collecting Love 💖</button>
+</div>
+
+<div id="scoreBoard">Love Score: 0</div>
+<div id="finalMessage">You collected all my love ❤️ I adore you forever 💌</div>
 
 <script>
 let score = 0;
-const player = document.getElementById("player");
-const scoreDisplay = document.getElementById("score");
-const message = document.getElementById("message");
+let gameInterval;
 
-document.addEventListener("mousemove", function(e) {
-    player.style.left = e.clientX + "px";
-});
+function startGame() {
+    document.getElementById("startScreen").style.display = "none";
+    gameInterval = setInterval(createHeart, 800);
+}
 
 function createHeart() {
     const heart = document.createElement("div");
     heart.className = "heart";
-    heart.innerHTML = "💘";
+    heart.innerHTML = "💖";
     heart.style.left = Math.random() * window.innerWidth + "px";
-    heart.style.top = "-30px";
+
+    heart.onclick = function() {
+        score++;
+        document.getElementById("scoreBoard").innerHTML = "Love Score: " + score;
+        heart.remove();
+
+        if (score >= 15) {
+            clearInterval(gameInterval);
+            document.getElementById("finalMessage").style.display = "block";
+        }
+    };
+
     document.body.appendChild(heart);
 
-    let fall = setInterval(function() {
-        heart.style.top = heart.offsetTop + 4 + "px";
-
-        const heartRect = heart.getBoundingClientRect();
-        const playerRect = player.getBoundingClientRect();
-
-        if (
-            heartRect.bottom >= playerRect.top &&
-            heartRect.left < playerRect.right &&
-            heartRect.right > playerRect.left
-        ) {
-            score++;
-            scoreDisplay.innerHTML = "Love Score: " + score;
-            heart.remove();
-            clearInterval(fall);
-
-            if (score >= 15) {
-                message.style.display = "block";
-            }
-        }
-
-        if (heart.offsetTop > window.innerHeight) {
-            heart.remove();
-            clearInterval(fall);
-        }
-    }, 20);
+    setTimeout(() => {
+        heart.remove();
+    }, 4000);
 }
-
-setInterval(createHeart, 800);
 </script>
 
 </body>
